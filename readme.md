@@ -1,38 +1,70 @@
-## Express Backend Boilerplate
+To create the MERN backend architecture and API endpoints for the Japanese Vocabulary Learning App based on the provided requirements, I will draft a scalable and modular design. It will include the following:
 
-- This repository serves as a boilerplate for developing a robust backend. You can speed up your backend development by using this repository.
+API Endpoints
 
-### Guidelines for use
+1. Authentication
+   POST /api/auth/register
+   Registers a new user.
 
-- Visit [this link](https://github.com/enayetsyl/backend-boilerplate) to download the code. 
+Body: { name, email, photo, password }
+POST /api/auth/login
+Logs in a user.
 
-- Alternatively, you can clone the project using the following command: 
+Body: { email, password } 2. User Management (Admin)
+GET /api/users
+Retrieve all users. (Admin only)
 
-```javascript
-git clone https://github.com/enayetsyl/backend-boilerplate.git
-```
+PATCH /api/users/:id/role
+Update a user’s role.
 
-- After downloading or cloning the project, open it in VS Code. Open the terminal and run the following command:
+Body: { role } 3. Lessons
+GET /api/lessons
+Retrieve all lessons.
 
-```javascript
-npm i
-```
+POST /api/lessons
+Create a new lesson. (Admin only)
 
-- In the ".env" file, add your MongoDB URI in the `database_url`. 
+Body: { name, number }
+PATCH /api/lessons/:id
+Update a lesson. (Admin only)
 
-- Run following command in the terminal to start the project
+Body: { name, number }
+DELETE /api/lessons/:id
+Delete a lesson. (Admin only)
 
-```javascript
-npm run start:dev
-```
+4. Vocabularies
+   GET /api/vocabularies
+   Retrieve all vocabularies, with optional filtering by lesson number (lessonNo query).
 
-- Open your browser and navigate to localhost:5000 to check whether the app is working properly. 
+POST /api/vocabularies
+Add a new vocabulary. (Admin only)
 
-- Inside each file, there are comments for your guidance. Some comments explain the purpose of the code and provide supporting reading materials. 
+Body: { word, pronunciation, whenToSay, lessonNo, adminEmail }
+PATCH /api/vocabularies/:id
+Update vocabulary details. (Admin only)
 
-- In some files, comments with "TODO" indicate what you need to change if you want to use it for your project. Read them carefully. 
+Body: { word, pronunciation, meaning, whenToSay, lessonNo }
+DELETE /api/vocabularies/:id
+Delete a vocabulary. (Admin only)
 
-- This boilerplate will save you from writing 730 lines of code, configuring three files, writing seven scripts in the `package.json` file, and installing 25 packages and dev dependencies.
+5. User Features
+   GET /api/user/lessons
+   Retrieve lessons available to the user.
 
-- If you have any queries you can connect with me on [LinkedIn](https://www.linkedin.com/in/md-enayetur-rahman/)
-"# Backend-Boilarplate" 
+GET /api/user/vocabularies/:lessonNo
+Retrieve vocabularies for a specific lesson, with pagination.
+
+GET /api/user/tutorials
+Retrieve embedded tutorial links.
+
+6. Additional Features
+   GET /api/user/profile
+   Retrieve the logged-in user's profile.
+
+PATCH /api/user/profile
+Update user profile.
+
+Body: { name, photo }
+Middleware
+authMiddleware.js: Protects routes, checks user roles.
+errorHandler.js: Centralized error handling.
