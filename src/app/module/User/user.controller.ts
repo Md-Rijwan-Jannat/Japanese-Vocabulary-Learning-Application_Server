@@ -1,10 +1,9 @@
-import { Request } from 'express';
 import catchAsync from '../../utils/catchAsync';
 import { AuthService } from './user.service';
 import sendResponse from '../../utils/sendResponse';
 import httpStatus from 'http-status';
 
-const getAllUsers = catchAsync(async (req, res) => {
+const getAllUsers = catchAsync(async (_req, res) => {
   const users = await AuthService.getAllUsers();
   sendResponse(res, {
     statusCode: httpStatus.OK,
