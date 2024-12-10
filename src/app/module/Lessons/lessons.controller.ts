@@ -1,22 +1,26 @@
-import { Request, Response } from 'express';
 import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
 import httpStatus from 'http-status';
 import { LessonService } from './lessons.service';
 
-const getAllLessons = catchAsync(async (req: Request, res: Response) => {
-  const lessons = await LessonService.getAllLessons();
+const getAllLessons = catchAsync(async (req, res) => {
+  const { result, meta } = await LessonService.getAllLessons(req.query);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: 'Lessons retrieved successfully',
-    data: lessons,
+    data: result,
+    meta: meta,
   });
 });
 
-const createLesson = catchAsync(async (req: Request, res: Response) => {
+const createLesson = catchAsync(async (req, res) => {
   const lessonData = req.body;
-  const newLesson = await LessonService.createLesson(lessonData);
+  const { id } = req.user;
+  const newLesson = await LessonService.createLesson({
+    ...lessonData,
+    createdBy: id,
+  });
   sendResponse(res, {
     statusCode: httpStatus.CREATED,
     success: true,
@@ -25,7 +29,7 @@ const createLesson = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-const updateLesson = catchAsync(async (req: Request, res: Response) => {
+const updateLesson = catchAsync(async (req, res) => {
   const lessonId = req.params.id;
   const updates = req.body;
   const updatedLesson = await LessonService.updateLesson(lessonId, updates);
@@ -37,7 +41,7 @@ const updateLesson = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-const deleteLesson = catchAsync(async (req: Request, res: Response) => {
+const deleteLesson = catchAsync(async (req, res) => {
   const lessonId = req.params.id;
   const deletedLesson = await LessonService.deleteLesson(lessonId);
   sendResponse(res, {
