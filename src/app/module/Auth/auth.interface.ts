@@ -1,4 +1,4 @@
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 
 export interface TUser {
   name: string;
@@ -6,6 +6,7 @@ export interface TUser {
   photo: string;
   password: string;
   role?: string;
+  completeLessons: Types.ObjectId[];
   createdAt?: Date;
   updatedAt?: Date;
 }

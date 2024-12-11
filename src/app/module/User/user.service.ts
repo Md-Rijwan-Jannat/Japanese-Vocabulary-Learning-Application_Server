@@ -2,13 +2,27 @@ import httpStatus from 'http-status';
 import AppError from '../../errors/AppError';
 import { User } from '../Auth/auth.model';
 import { TUser } from '../Auth/auth.interface';
+import QueryBuilder from '../../builder/queryBuilder';
 
-const getAllUsers = async () => {
-  return User.find();
+const getAllUsers = async (query: Record<string, any>) => {
+  const usersQueryBuilder = new QueryBuilder(
+    User.find().populate('completeLessons'),
+    query
+  )
+    .search(['name', 'email'])
+    .sort()
+    .fields()
+    .filter()
+    .paginate();
+
+  const result = await usersQueryBuilder.modelQuery;
+  const meta = await usersQueryBuilder.countTotal();
+
+  return { result, meta };
 };
 
 const getUserById = async (id: string) => {
-  const user = await User.findById(id);
+  const user = await User.findById(id).populate('completeLessons');
   if (!user) throw new AppError(httpStatus.NOT_FOUND, 'User not found');
   return user;
 };

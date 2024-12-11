@@ -5,8 +5,7 @@ import { VocabularyService } from './vocabulary.service';
 import httpStatus from 'http-status';
 
 const getAllVocabularies = catchAsync(async (req: Request, res: Response) => {
-  const lessonNo = req.query.lessonNo ? Number(req.query.lessonNo) : undefined;
-  const vocabularies = await VocabularyService.getAllVocabularies(lessonNo);
+  const vocabularies = await VocabularyService.getAllVocabularies(req.query);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,

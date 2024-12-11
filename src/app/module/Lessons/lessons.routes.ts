@@ -8,6 +8,7 @@ import { LessonValidation } from './lessons.validation';
 const router = express.Router();
 
 router.get('/', LessonController.getAllLessons); // Public
+router.get('/:id', LessonController.getLessonsById); // Public
 
 router.post(
   '/',
@@ -15,6 +16,12 @@ router.post(
   validateRequest(LessonValidation.createLessonValidationSchema),
   LessonController.createLesson
 ); // Admin only
+
+router.put(
+  '/:lessonId/complete',
+  Auth(USER_ROLE.admin, USER_ROLE.user),
+  LessonController.completeLesson
+);
 
 router.patch(
   '/:id',

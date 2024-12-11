@@ -5,11 +5,35 @@ import config from '../../../config';
 
 const userSchema = new Schema<TUser, UserModel>(
   {
-    name: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
-    photo: { type: String },
-    password: { type: String, required: true, select: false },
-    role: { type: String, enum: ['user', 'admin'], default: 'user' },
+    name: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    photo: {
+      type: String,
+    },
+    completeLessons: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Lesson',
+        default: [],
+      },
+    ],
+    password: {
+      type: String,
+      required: true,
+      select: false,
+    },
+    role: {
+      type: String,
+      enum: ['user', 'admin'],
+      default: 'user',
+    },
   },
   { timestamps: true }
 );

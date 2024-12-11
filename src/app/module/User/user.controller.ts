@@ -3,13 +3,14 @@ import { AuthService } from './user.service';
 import sendResponse from '../../utils/sendResponse';
 import httpStatus from 'http-status';
 
-const getAllUsers = catchAsync(async (_req, res) => {
-  const users = await AuthService.getAllUsers();
+const getAllUsers = catchAsync(async (req, res) => {
+  const { result, meta } = await AuthService.getAllUsers(req.query);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: 'Users retrieved successfully',
-    data: users,
+    data: result,
+    meta: meta,
   });
 });
 

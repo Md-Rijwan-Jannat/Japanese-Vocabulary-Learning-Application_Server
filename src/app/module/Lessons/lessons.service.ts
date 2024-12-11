@@ -29,6 +29,14 @@ const getAllLessons = async (query: Record<string, any>) => {
   return { result, meta };
 };
 
+const getLessonsById = async (lessonId: string) => {
+  const result = await Lesson.findById(lessonId)
+    .populate('createdBy')
+    .populate('vocabularies');
+  if (!result) throw new AppError(httpStatus.NOT_FOUND, 'Lesson not found');
+  return result;
+};
+
 const createLesson = async (lessonData: {
   name: string;
   number: number;
@@ -63,6 +71,19 @@ const createLesson = async (lessonData: {
   });
 };
 
+const completeLesson = async (userId: string, lessonId: string) => {
+  const user = await User.findById(userId);
+  if (!user) throw new AppError(httpStatus.NOT_FOUND, 'User not found');
+
+  const result = await User.findByIdAndUpdate(
+    userId,
+    { $addToSet: { completeLessons: lessonId } },
+    { new: true }
+  );
+
+  return result;
+};
+
 const updateLesson = async (
   id: string,
   updates: { name?: string; number?: number }
@@ -80,7 +101,9 @@ const deleteLesson = async (id: string) => {
 
 export const LessonService = {
   getAllLessons,
+  getLessonsById,
   createLesson,
+  completeLesson,
   updateLesson,
   deleteLesson,
 };

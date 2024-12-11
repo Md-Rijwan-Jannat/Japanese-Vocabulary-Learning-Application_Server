@@ -4,10 +4,23 @@ import httpStatus from 'http-status';
 import { User } from '../Auth/auth.model';
 import { TVocabulary } from './vocabulary.interface';
 import { Lesson } from '../Lessons/lessons.model';
+import QueryBuilder from '../../builder/queryBuilder';
 
-const getAllVocabularies = async (lessonNo?: number) => {
-  const filter = lessonNo ? { lessonNo } : {};
-  return Vocabulary.find(filter);
+const getAllVocabularies = async (query: Record<string, any>) => {
+  const vocabularyQueryBuilder = new QueryBuilder(
+    Vocabulary.find().populate('createdBy').populate('lesson'),
+    query
+  )
+    .search(['word', 'meaning'])
+    .sort()
+    .fields()
+    .filter()
+    .paginate();
+
+  const result = await vocabularyQueryBuilder.modelQuery;
+  const meta = await vocabularyQueryBuilder.countTotal();
+
+  return { result, meta };
 };
 
 const createVocabulary = async (data: TVocabulary, adminId: string) => {
