@@ -5,13 +5,16 @@ import { VocabularyService } from './vocabulary.service';
 import httpStatus from 'http-status';
 
 const getAllVocabularies = catchAsync(async (req: Request, res: Response) => {
-  const vocabularies = await VocabularyService.getAllVocabularies(req.query);
+  const { result, meta } = await VocabularyService.getAllVocabularies(
+    req.query
+  );
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: 'Vocabularies retrieved successfully',
-    data: vocabularies,
+    data: result,
+    meta: meta,
   });
 });
 

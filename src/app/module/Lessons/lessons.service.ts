@@ -51,6 +51,18 @@ const createLesson = async (lessonData: {
     throw new Error('The specified user does not exist.');
   }
 
+  // Validate if the lesson number is unique
+  const existingLessonByNumber = await Lesson.findOne({ number });
+  if (existingLessonByNumber) {
+    throw new Error(`Lesson with number ${number} already exists.`);
+  }
+
+  // Validate if the lesson name is unique
+  const existingLessonByName = await Lesson.findOne({ name });
+  if (existingLessonByName) {
+    throw new Error(`Lesson with name "${name}" already exists.`);
+  }
+
   // Validate if vocabularies exist (only if vocabularies are provided)
   if (vocabularies?.length > 0) {
     const vocabularyIds = vocabularies.map((id) => new Types.ObjectId(id));
@@ -73,8 +85,19 @@ const createLesson = async (lessonData: {
 
 const completeLesson = async (userId: string, lessonId: string) => {
   const user = await User.findById(userId);
-  if (!user) throw new AppError(httpStatus.NOT_FOUND, 'User not found');
 
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, 'User not found');
+  }
+
+  const lessonObjectId = new Types.ObjectId(lessonId);
+
+  // Check if the lesson already exists in the completeLessons array
+  if (user.completeLessons.includes(lessonObjectId)) {
+    throw new AppError(httpStatus.CONFLICT, 'Lesson already completed');
+  }
+
+  // Add the lesson to the completeLessons array
   const result = await User.findByIdAndUpdate(
     userId,
     { $addToSet: { completeLessons: lessonId } },

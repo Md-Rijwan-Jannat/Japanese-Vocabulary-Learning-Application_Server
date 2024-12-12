@@ -3,6 +3,7 @@ import { AuthRoutes } from '../module/Auth/auth.routes';
 import { UserRoutes } from '../module/User/user.routes';
 import { LessonRoutes } from '../module/Lessons/lessons.routes';
 import { VocabularyRoutes } from '../module/Vocabulary/vocabulary.routes';
+import { TutorialRoutes } from '../module/Tutorial/tutorial.routes';
 
 const router = Router();
 
@@ -22,6 +23,10 @@ const moduleRoutes = [
   {
     path: '/vocabularies',
     route: VocabularyRoutes,
+  },
+  {
+    path: '/tutorials',
+    route: TutorialRoutes,
   },
 ];
 

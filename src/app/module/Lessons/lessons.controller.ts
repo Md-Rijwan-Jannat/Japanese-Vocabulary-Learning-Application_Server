@@ -2,6 +2,7 @@ import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
 import httpStatus from 'http-status';
 import { LessonService } from './lessons.service';
+import { Types } from 'mongoose';
 
 const getAllLessons = catchAsync(async (req, res) => {
   const { result, meta } = await LessonService.getAllLessons(req.query);
