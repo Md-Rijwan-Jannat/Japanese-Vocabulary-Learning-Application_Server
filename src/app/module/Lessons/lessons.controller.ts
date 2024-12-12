@@ -15,6 +15,17 @@ const getAllLessons = catchAsync(async (req, res) => {
   });
 });
 
+const getAllCompleteLessons = catchAsync(async (req, res) => {
+  const { result, meta } = await LessonService.getAllCompleteLessons(req.query);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Complete lessons retrieved successfully',
+    data: result,
+    meta: meta,
+  });
+});
+
 const getLessonsById = catchAsync(async (req, res) => {
   const result = await LessonService.getLessonsById(req.params.id);
   sendResponse(res, {
@@ -77,6 +88,7 @@ const deleteLesson = catchAsync(async (req, res) => {
 
 export const LessonController = {
   getAllLessons,
+  getAllCompleteLessons,
   getLessonsById,
   createLesson,
   completeLesson,

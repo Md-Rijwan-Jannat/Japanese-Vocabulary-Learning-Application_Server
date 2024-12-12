@@ -29,6 +29,38 @@ const getAllLessons = async (query: Record<string, any>) => {
   return { result, meta };
 };
 
+const getAllCompleteLessons = async (query: Record<string, any>) => {
+  const users = await User.find();
+
+  const allLessonIds = users.reduce<string[]>((ids, user) => {
+    const lessonIds = (user.completeLessons || []).map((id) => id.toString());
+    return ids.concat(lessonIds);
+  }, []);
+
+  const uniqueLessonIds = [...new Set(allLessonIds)];
+
+  const lessonQueryBuilder = new QueryBuilder(
+    Lesson.find({ _id: { $in: uniqueLessonIds } })
+      .populate({
+        path: 'createdBy',
+      })
+      .populate({
+        path: 'vocabularies',
+      }),
+    query
+  )
+    .search(['name'])
+    .sort()
+    .fields()
+    .filter()
+    .paginate();
+
+  const result = await lessonQueryBuilder.modelQuery;
+  const meta = await lessonQueryBuilder.countTotal();
+
+  return { result, meta };
+};
+
 const getLessonsById = async (lessonId: string) => {
   const result = await Lesson.findById(lessonId)
     .populate('createdBy')
@@ -124,6 +156,7 @@ const deleteLesson = async (id: string) => {
 
 export const LessonService = {
   getAllLessons,
+  getAllCompleteLessons,
   getLessonsById,
   createLesson,
   completeLesson,

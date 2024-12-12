@@ -7,8 +7,23 @@ import { LessonValidation } from './lessons.validation';
 
 const router = express.Router();
 
-router.get('/', LessonController.getAllLessons); // Public
-router.get('/:id', LessonController.getLessonsById); // Public
+router.get(
+  '/',
+  Auth(USER_ROLE.admin, USER_ROLE.user),
+  LessonController.getAllLessons
+);
+
+router.get(
+  '/complete',
+  Auth(USER_ROLE.admin, USER_ROLE.user),
+  LessonController.getAllCompleteLessons
+);
+
+router.get(
+  '/:id',
+  Auth(USER_ROLE.admin, USER_ROLE.user),
+  LessonController.getLessonsById
+);
 
 router.post(
   '/',
